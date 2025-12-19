@@ -23,16 +23,15 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")  // Áp dụng cho tất cả các endpoint
-                .allowedOrigins(
-                    "http://localhost:4200",      // Angular dev server (ng serve)
-                    "http://localhost",           // Docker frontend (Nginx)
-                    "http://localhost:80",        // Docker frontend (port 80)
-                    "http://localhost:8080",      // Backend (Swagger UI)
-                    "http://127.0.0.1:4200",      // Localhost dạng IP
-                    "http://127.0.0.1",           // Localhost dạng IP
-                    "http://127.0.0.1:8080",      // Backend dạng IP
-                    // Production URLs - Thay bằng domain thực của bạn
-                    "https://your-app.vercel.app",
+                .allowedOriginPatterns(
+                    "http://localhost:4200",
+                    "http://localhost",
+                    "http://localhost:80",
+                    "http://localhost:8080",
+                    "http://127.0.0.1:4200",
+                    "http://127.0.0.1",
+                    "http://127.0.0.1:8080",
+                    "https://frontend-prod-gilt.vercel.app",
                     "https://*.vercel.app"
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")  // Các HTTP method được phép
