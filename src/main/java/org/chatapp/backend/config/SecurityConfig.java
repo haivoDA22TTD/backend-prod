@@ -55,7 +55,22 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             
             // Bật CORS (đã cấu hình trong CorsConfig)
-            .cors(cors -> {})
+            .cors(cors -> cors.configurationSource(request -> {
+                var corsConfig = new org.springframework.web.cors.CorsConfiguration();
+                corsConfig.setAllowedOriginPatterns(java.util.List.of(
+                    "http://localhost:4200",
+                    "http://localhost",
+                    "http://localhost:*",
+                    "https://frontend-prod-gilt.vercel.app",
+                    "https://*.vercel.app"
+                ));
+                corsConfig.setAllowedMethods(java.util.List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                corsConfig.setAllowedHeaders(java.util.List.of("*"));
+                corsConfig.setExposedHeaders(java.util.List.of("*"));
+                corsConfig.setAllowCredentials(true);
+                corsConfig.setMaxAge(3600L);
+                return corsConfig;
+            }))
             
             // Cấu hình session: STATELESS = không tạo session
             // JWT là stateless, server không lưu trạng thái đăng nhập
@@ -65,6 +80,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 // PUBLIC ENDPOINTS - Không cần đăng nhập
                 .requestMatchers("/api/v1/users", "/api/v1/users/register").permitAll()  // Đăng nhập/đăng ký
+                .requestMatchers("/api/v1/health").permitAll()                           // Health check
                 .requestMatchers("/api/ws/**").permitAll()                               // WebSocket
                 // Swagger/OpenAPI endpoints - cho phép tất cả
                 .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/swagger-ui/index.html").permitAll()
